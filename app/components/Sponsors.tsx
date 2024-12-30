@@ -49,8 +49,8 @@ export default function Sponsors() {
   }, [direction]);
 
   return (
-    <div className="mt-12 p-6 bg-white rounded-xl shadow-lg">
-      <h2 className="text-2xl font-bold text-green-800 mb-6 text-center">
+    <div className="mt-12 p-3 bg-white rounded-xl shadow-lg">
+      <h2 className="text-2xl font-bold text-green-800  text-center">
         Our Sponsors
       </h2>
       
@@ -83,7 +83,7 @@ export default function Sponsors() {
         ))}
       </div>
       
-      <div className="flex justify-center space-x-2 mt-4">
+      <div className="flex justify-center space-x-2 ">
         {sponsors.map((_, index) => (
           <button
             key={index}

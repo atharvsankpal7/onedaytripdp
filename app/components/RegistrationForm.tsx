@@ -7,10 +7,21 @@ import { toast } from "react-hot-toast";
 import type { RegistrationFormData } from "../types/registration";
 import ContactInput from "./form/ContactInput";
 import MedicalConditions from "./form/MedicalConditions";
+import NatureWalkIllustration from "./illustrations/NatureWalkIllustration";
+import GifPlaceholder from "./form/GifPlaceholder";
+import FeedbackModal from "./modals/FeedbackModal";
 
 export default function RegistrationForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [modalState, setModalState] = useState<{
+    isOpen: boolean;
+    type: "success" | "error";
+    message: string;
+  }>({
+    isOpen: false,
+    type: "success",
+    message: "",
+  });
 
   const {
     register,
@@ -30,9 +41,20 @@ export default function RegistrationForm() {
 
       if (!response.ok) throw new Error("Registration failed");
 
-      setShowModal(true);
+      setModalState({
+        isOpen: true,
+        type: "success",
+        message:
+          "Thank you for registering for the Nature Walk. We'll contact you soon with further details.",
+      });
       toast.success("Registration successful!");
     } catch (error) {
+      setModalState({
+        isOpen: true,
+        type: "error",
+        message:
+          "We couldn't process your registration. Please try again or contact support if the problem persists.",
+      });
       toast.error("Registration failed. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -43,7 +65,7 @@ export default function RegistrationForm() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="min-h-screen  p-4 md:p-8"
+      className="min-h-screen p-4 md:p-8"
     >
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg p-6 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-400 to-green-600" />
@@ -51,6 +73,8 @@ export default function RegistrationForm() {
         <h1 className="text-3xl font-bold text-green-800 mb-6">
           Nature Walk Registration
         </h1>
+
+        <NatureWalkIllustration />
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-2">
@@ -93,6 +117,7 @@ export default function RegistrationForm() {
           />
 
           <MedicalConditions register={register} watch={watch} />
+          <GifPlaceholder />
 
           <motion.button
             type="submit"
@@ -110,20 +135,17 @@ export default function RegistrationForm() {
         </form>
       </div>
 
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full">
-            <h2 className="text-2xl font-bold text-green-800 mb-4">Registration Successful!</h2>
-            <p className="text-gray-600 mb-6">Thank you for registering for the Nature Walk. We'll contact you soon with further details.</p>
-            <button
-              onClick={() => setShowModal(false)}
-              className="w-full py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+      <FeedbackModal
+        isOpen={modalState.isOpen}
+        onClose={() => setModalState((prev) => ({ ...prev, isOpen: false }))}
+        type={modalState.type}
+        title={
+          modalState.type === "success"
+            ? "Registration Successful!"
+            : "Registration Failed"
+        }
+        message={modalState.message}
+      />
     </motion.div>
   );
 }
