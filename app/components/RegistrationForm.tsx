@@ -71,7 +71,7 @@ export default function RegistrationForm() {
         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-400 to-green-600" />
 
         <h1 className="text-3xl font-bold text-green-800 mb-6">
-          Nature Walk Registration
+          Janai to Shirsai Nature Walk
         </h1>
 
         <NatureWalkIllustration />
