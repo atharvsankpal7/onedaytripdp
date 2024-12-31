@@ -1,36 +1,65 @@
-import Database from 'better-sqlite3';
+import { MongoClient } from 'mongodb';
 import { RegistrationFormData } from '@/app/types/registration';
 
-const db = new Database('registration.db');
+if (!process.env.MONGODB_URI) {
+  throw new Error('Please add your MongoDB URI to .env');
+}
 
-// Initialize database
-db.exec(`
-  CREATE TABLE IF NOT EXISTS registrations (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    fullName TEXT NOT NULL,
-    primaryContact TEXT NOT NULL,
-    secondaryContact TEXT,
-    whatsappNumber TEXT NOT NULL,
-    medicalConditions TEXT,
-    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
-  )
-`);
+const uri = process.env.MONGODB_URI;
+const options = {};
 
-export const createRegistration = (data: RegistrationFormData) => {
-  const stmt = db.prepare(`
-    INSERT INTO registrations (
-      fullName, primaryContact, secondaryContact, whatsappNumber, medicalConditions
-    ) VALUES (?, ?, ?, ?, ?)
-  `);
+let client: MongoClient;
+let clientPromise: Promise<MongoClient>;
 
-  return stmt.run(
-    data.fullName,
-    data.primaryContact,
-    data.secondaryContact || null,
-    data.whatsappNumber,
-    data.medicalConditions || null
-  );
-};
+if (process.env.NODE_ENV === 'development') {
+  // In development mode, use a global variable so that the value
+  // is preserved across module reloads caused by HMR (Hot Module Replacement).
+  let globalWithMongo = global as typeof globalThis & {
+    _mongoClientPromise?: Promise<MongoClient>;
+  };
 
-export default db;
+  if (!globalWithMongo._mongoClientPromise) {
+    client = new MongoClient(uri, options);
+    globalWithMongo._mongoClientPromise = client.connect();
+  }
+  clientPromise = globalWithMongo._mongoClientPromise;
+} else {
+  // In production mode, it's best to not use a global variable.
+  client = new MongoClient(uri, options);
+  clientPromise = client.connect();
+}
+
+export async function createRegistration(data: RegistrationFormData) {
+  try {
+    const client = await clientPromise;
+    const db = client.db();
+    const collection = db.collection('registrations');
+
+    const registrationData = {
+      ...data,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const result = await collection.insertOne(registrationData);
+    return { success: true, id: result.insertedId };
+  } catch (error) {
+    console.error('Database error:', error);
+    throw error;
+  }
+}
+
+export async function getRegistrations() {
+  try {
+    const client = await clientPromise;
+    const db = client.db();
+    const collection = db.collection('registrations');
+    
+    return await collection.find({}).toArray();
+  } catch (error) {
+    console.error('Database error:', error);
+    throw error;
+  }
+}
+
+export default clientPromise;
