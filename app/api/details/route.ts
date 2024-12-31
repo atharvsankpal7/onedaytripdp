@@ -1,7 +1,16 @@
 import { NextResponse } from "next/server";
 import db from "@/lib/db";
 
-export async function POST(request) {
+type Registration = {
+  fullName: string;
+  primaryContact: string;
+  secondaryContact?: string;
+  whatsappNumber: string;
+  medicalConditions?: string;
+  createdAt: string;
+};
+
+export async function POST(request: Request) {
   try {
     const { password } = await request.json();
 
@@ -9,8 +18,10 @@ export async function POST(request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    // Get all registrations
-    const registrations = db.prepare(`
+    // Get all registrations with type assertion
+    const registrations = db
+      .prepare(
+        `
       SELECT 
         fullName, 
         primaryContact, 
@@ -19,20 +30,31 @@ export async function POST(request) {
         medicalConditions,
         createdAt
       FROM registrations
-    `).all();
+    `
+      )
+      .all() as Registration[];
 
     // Convert to CSV
-    const headers = ["Full Name", "Primary Contact", "Secondary Contact", "WhatsApp Number", "Medical Conditions", "Created At"];
+    const headers = [
+      "Full Name",
+      "Primary Contact",
+      "Secondary Contact",
+      "WhatsApp Number",
+      "Medical Conditions",
+      "Created At",
+    ];
     const csvRows = [
       headers.join(","),
-      ...registrations.map(row => [
-        `"${row.fullName}"`,
-        `"${row.primaryContact}"`,
-        `"${row.secondaryContact || ""}"`,
-        `"${row.whatsappNumber}"`,
-        `"${row.medicalConditions || ""}"`,
-        `"${row.createdAt}"`
-      ].join(","))
+      ...registrations.map((row) =>
+        [
+          `"${row.fullName}"`,
+          `"${row.primaryContact}"`,
+          `"${row.secondaryContact || ""}"`,
+          `"${row.whatsappNumber}"`,
+          `"${row.medicalConditions || ""}"`,
+          `"${row.createdAt}"`,
+        ].join(",")
+      ),
     ];
     const csv = csvRows.join("\n");
 
@@ -46,4 +68,5 @@ export async function POST(request) {
     console.error("Error generating CSV:", error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
+
 }
