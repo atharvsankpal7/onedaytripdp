@@ -28,6 +28,7 @@ export default function RegistrationForm() {
     handleSubmit,
     formState: { errors },
     watch,
+    reset,
   } = useForm<RegistrationFormData>();
 
   const onSubmit = async (data: RegistrationFormData) => {
@@ -48,6 +49,7 @@ export default function RegistrationForm() {
           "निसर्ग भ्रमंतीसाठी नोंदणी केल्याबद्दल धन्यवाद. आम्ही लवकरच अधिक माहितीसह संपर्क साधू. (Thank you for registering for the Nature Walk. We'll contact you soon with further details.)",
       });
       toast.success("नोंदणी यशस्वी! (Registration successful!)");
+      reset(); // Clear the form after successful registration
     } catch (error) {
       setModalState({
         isOpen: true,
@@ -55,7 +57,10 @@ export default function RegistrationForm() {
         message:
           "आम्ही आपली नोंदणी प्रक्रिया करू शकलो नाही. कृपया पुन्हा प्रयत्न करा किंवा समस्या कायम राहिल्यास सहाय्यासाठी संपर्क साधा. (We couldn't process your registration. Please try again or contact support if the problem persists.)",
       });
-      toast.error("नोंदणी अयशस्वी. कृपया पुन्हा प्रयत्न करा. (Registration failed. Please try again.)");
+      toast.error(
+        "नोंदणी अयशस्वी. कृपया पुन्हा प्रयत्न करा. (Registration failed. Please try again.)"
+      );
+      reset(); // Clear the form after failed registration as well
     } finally {
       setIsSubmitting(false);
     }
@@ -71,13 +76,14 @@ export default function RegistrationForm() {
         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-400 to-green-600" />
 
         <h1 className="text-3xl font-bold text-green-800 mb-6">
-          जानाई ते शिरसाई पायी चालत प्रवास 
+          जानाई ते शिरसाई पायी चालत प्रवास
         </h1>
 
         <NatureWalkIllustration />
 
         <p className="text-sm text-red-600 mb-4">
-          * तारांकित क्षेत्रे भरणे आवश्यक आहे (Fields marked with * are required)
+          * तारांकित क्षेत्रे भरणे आवश्यक आहे (Fields marked with * are
+          required)
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -121,10 +127,12 @@ export default function RegistrationForm() {
               <input
                 type="number"
                 {...register("familyMembers", {
-                  required: "कुटुंब सदस्य संख्या आवश्यक आहे (Number of family members is required)",
+                  required:
+                    "कुटुंब सदस्य संख्या आवश्यक आहे (Number of family members is required)",
                   min: {
                     value: 1,
-                    message: "किमान 1 सदस्य असणे आवश्यक आहे (Minimum 1 member required)",
+                    message:
+                      "किमान 1 सदस्य असणे आवश्यक आहे (Minimum 1 member required)",
                   },
                 })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent"
@@ -133,10 +141,13 @@ export default function RegistrationForm() {
               />
             </div>
             {errors.familyMembers && (
-              <p className="text-red-500 text-sm">{errors.familyMembers.message}</p>
+              <p className="text-red-500 text-sm">
+                {errors.familyMembers.message}
+              </p>
             )}
             <p className="text-sm text-gray-500">
-              स्वतःसह एकूण सदस्य संख्या नमूद करा (Include total count including yourself)
+              स्वतःसह एकूण सदस्य संख्या नमूद करा (Include total count including
+              yourself)
             </p>
           </div>
 
@@ -154,7 +165,9 @@ export default function RegistrationForm() {
                 : "hover:bg-green-700"
             }`}
           >
-            {isSubmitting ? "नोंदणी होत आहे... (Registering...)" : "सहभागी व्हा "}
+            {isSubmitting
+              ? "नोंदणी होत आहे... (Registering...)"
+              : "सहभागी व्हा "}
           </motion.button>
         </form>
       </div>
