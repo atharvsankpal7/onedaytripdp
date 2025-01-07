@@ -24,7 +24,7 @@ export default function GifBanner() {
           transition={{ delay: 0.2, duration: 0.8 }}
           className="text-4xl font-bold mb-2"
         >
-          Nature Walk Experience
+          निसर्ग भ्रमंती अनुभव (Nature Walk Experience)
         </motion.h1>
         <motion.p
           initial={{ y: 20, opacity: 0 }}
@@ -32,7 +32,7 @@ export default function GifBanner() {
           transition={{ delay: 0.4, duration: 0.8 }}
           className="text-lg text-green-50"
         >
-          Join us for a memorable journey through pristine forests
+          निर्मळ जंगलांमधून एका स्मरणीय प्रवासासाठी सामील व्हा (Join us for a memorable journey through pristine forests)
         </motion.p>
       </div>
     </motion.div>
