@@ -1,8 +1,8 @@
 export interface RegistrationFormData {
   fullName: string;
   primaryContact: string;
-  secondaryContact?: string;
   whatsappNumber: string;
+  familyMembers: number;
   medicalConditions?: string;
 }
 

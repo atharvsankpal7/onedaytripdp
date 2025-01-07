@@ -14,14 +14,14 @@ export default function MedicalConditions({ register, watch }: MedicalConditions
   return (
     <div className="space-y-2">
       <label className="block text-sm font-medium text-gray-700">
-        Medical Conditions
+        वैद्यकीय स्थिती (Medical Conditions)
       </label>
       <div className="relative">
         <AlertCircle className="absolute left-3 top-3 text-gray-400" size={18} />
         <textarea
           {...register("medicalConditions")}
           className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent min-h-[100px]"
-          placeholder="Please list any medical conditions..."
+          placeholder="कृपया कोणत्याही वैद्यकीय स्थितीची यादी करा... (Please list any medical conditions...)"
         />
       </div>
       <div className="flex flex-wrap gap-2 mt-2">
