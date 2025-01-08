@@ -21,15 +21,16 @@ export default function ContactInput({
 }: ContactInputProps) {
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-gray-700">
-        {label}
-      </label>
+      <label className="block text-sm font-medium text-gray-700">{label}</label>
       <div className="relative">
-        <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+        <Phone
+          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+          size={18}
+        />
         <input
           {...register(name)}
           className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent"
-          placeholder="+1 234 567 8900"
+          placeholder="+91 12345 67890"
         />
       </div>
       {errors[name] && (
