@@ -76,7 +76,7 @@ export default function RegistrationForm() {
         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-400 to-green-600" />
 
         <h1 className="text-3xl font-bold text-green-800 mb-6">
-          जानाई ते शिरसाई पायी चालत प्रवास
+          जानाई ते शिरसाई, निसर्गातून पायी प्रवास
         </h1>
 
         <NatureWalkIllustration />
@@ -96,7 +96,7 @@ export default function RegistrationForm() {
                 required: "नाव आवश्यक आहे (Full name is required)",
               })}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              placeholder="प्रथमेश गोविंद धापटे "
+              placeholder="संपूर्ण नाव"
             />
             {errors.fullName && (
               <p className="text-red-500 text-sm">{errors.fullName.message}</p>

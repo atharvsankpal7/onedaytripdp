@@ -4,8 +4,8 @@ import { getRegistrations } from "@/lib/db";
 type Registration = {
   fullName: string;
   primaryContact: string;
-  secondaryContact?: string;
   whatsappNumber: string;
+  familyMembers: number;
   medicalConditions?: string;
   createdAt: string;
 };
@@ -24,8 +24,8 @@ export async function POST(request: Request) {
     const headers = [
       "Full Name",
       "Primary Contact",
-      "Secondary Contact",
       "WhatsApp Number",
+      "Family Members",
       "Medical Conditions",
       "Created At",
     ];
@@ -35,8 +35,8 @@ export async function POST(request: Request) {
         [
           `"${row.fullName}"`,
           `"${row.primaryContact}"`,
-          `"${row.secondaryContact || ""}"`,
           `"${row.whatsappNumber}"`,
+          `"${row.familyMembers || 1}"`,
           `"${row.medicalConditions || ""}"`,
           `"${new Date(row.createdAt).toISOString()}"`,
         ].join(",")
